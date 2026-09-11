@@ -1,0 +1,15 @@
+import { Download, ShieldCheck } from "lucide-react";
+import { ImportPanel } from "@/components/import-panel";
+import { PushManager } from "@/components/push-manager";
+import { PageHeader, PreviewNotice, SectionHeader } from "@/components/ui";
+import { getWorkspaceData } from "@/lib/data/workspace";
+import { DeleteAccount } from "@/components/delete-account";
+import { InviteForm } from "@/components/invite-form";
+
+export const metadata = { title: "Pengaturan" };
+
+export default async function SettingsPage() {
+  const data = await getWorkspaceData();
+  const enabled = data.configured && data.signedIn;
+  return <><PageHeader eyebrow="Preferensi dan data" title="Pengaturan" description="Kelola profil, taksonomi, notifikasi, portabilitas data, dan akses akun." />{!data.configured ? <section className="section"><PreviewNotice /></section> : null}<section className="section"><SectionHeader title="Profil" description="Default Kendali mengikuti konteks Indonesia." /><div className="summary-strip"><div className="summary-item"><span className="summary-label">Locale</span><span className="summary-value">id-ID</span></div><div className="summary-item"><span className="summary-label">Zona waktu</span><span className="summary-value">Asia/Jakarta</span></div><div className="summary-item"><span className="summary-label">Mata uang</span><span className="summary-value">IDR</span></div></div></section><section className="section"><SectionHeader title="Push dan perangkat" description="Opt-in per perangkat; izin tidak pernah diminta saat halaman pertama dibuka." /><PushManager enabled={enabled} /></section><section className="section"><SectionHeader title="Undangan opsional" description="Hanya admin. Pengguna juga dapat mendaftar sendiri melalui halaman Daftar." /><InviteForm enabled={enabled && data.isAdmin} /></section><section className="section"><SectionHeader title="Impor data" description="Preview menampilkan error per baris. Tidak ada data disimpan pada tahap ini." /><div className="form-grid form-grid--2"><ImportPanel scope="applications" enabled={enabled} /><ImportPanel scope="transactions" enabled={enabled} /></div></section><section className="section"><SectionHeader title="Ekspor data" description="CSV per modul atau JSON untuk seluruh data terstruktur." /><div className="page-actions"><a className="button" href="/api/export?scope=applications&format=csv"><Download size={16} />CSV lamaran</a><a className="button" href="/api/export?scope=finance&format=csv"><Download size={16} />CSV keuangan</a><a className="button" href="/api/export?scope=all&format=json"><Download size={16} />JSON lengkap</a></div></section><section className="section"><SectionHeader title="Privasi dan penghapusan" description="Ekspor data ditawarkan sebelum penghapusan akun permanen." /><div className="notice"><ShieldCheck size={20} /><div className="notice__body"><strong>Data dipisahkan per pemilik</strong><span className="muted">Grant dan RLS bekerja sebagai dua lapisan. Penghapusan akun memerlukan typed confirmation.</span><DeleteAccount enabled={enabled} /></div></div></section></>;
+}

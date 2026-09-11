@@ -1,0 +1,37 @@
+"use client";
+
+import { useActionState } from "react";
+import { addGoalContribution, archiveAccount, createAccount, createBudget, createSavingsGoal, updateAccount, type ActionState } from "@/app/actions";
+import type { AccountSummary } from "@/lib/domain/types";
+
+const initial: ActionState = { status: "idle", message: "" };
+
+function Feedback({ state }: { state: ActionState }) { return <p className="form-status" data-state={state.status} role="status">{state.message}</p>; }
+
+export function AccountForm({ enabled }: { enabled: boolean }) {
+  const [state, action, pending] = useActionState(createAccount, initial);
+  return <form action={action} className="form-grid form-grid--2"><div className="field"><label htmlFor="account-name">Nama akun</label><input className="input" id="account-name" name="name" required disabled={!enabled} placeholder="Rekening utama" /><span className="field-help">Nama harus unik.</span></div><div className="field"><label htmlFor="account-kind">Jenis</label><select className="input" id="account-kind" name="kind" disabled={!enabled}><option value="bank">Bank</option><option value="cash">Kas</option><option value="ewallet">E-wallet</option><option value="other">Lainnya</option></select><span className="field-help">Membantu pengelompokan.</span></div><div className="field"><label htmlFor="opening-balance">Saldo awal</label><input className="input mono" id="opening-balance" name="openingBalance" inputMode="decimal" defaultValue="0.00" disabled={!enabled} /><span className="field-help">IDR</span></div><div><button className="button button--primary" type="submit" disabled={!enabled || pending} data-state={pending ? "loading" : undefined}>{pending ? "Menyimpan" : "Simpan akun"}</button><Feedback state={state} /></div></form>;
+}
+
+export function AccountManager({ account }: { account: AccountSummary }) {
+  const [state, updateAction, updating] = useActionState(updateAccount, initial);
+  const [archiveState, archiveAction, archiving] = useActionState(archiveAccount, initial);
+  return <details className="row-disclosure"><summary>Kelola</summary><div className="row-disclosure__body"><form action={updateAction} className="form-grid form-grid--2"><input type="hidden" name="accountId" value={account.id} /><div className="field"><label htmlFor={`account-name-${account.id}`}>Nama</label><input className="input" id={`account-name-${account.id}`} name="name" defaultValue={account.name} required disabled={updating} /></div><div className="field"><label htmlFor={`account-kind-${account.id}`}>Jenis</label><select className="input" id={`account-kind-${account.id}`} name="kind" defaultValue={account.kind} disabled={updating}><option value="bank">Bank</option><option value="cash">Kas</option><option value="ewallet">E-wallet</option><option value="other">Lainnya</option></select></div><div className="field"><label htmlFor={`account-opening-${account.id}`}>Saldo awal</label><input className="input mono" id={`account-opening-${account.id}`} name="openingBalance" inputMode="decimal" defaultValue={account.openingBalance} required disabled={updating} /></div><div><button className="button" type="submit" disabled={updating}>{updating ? "Menyimpan…" : "Simpan akun"}</button><Feedback state={state} /></div></form><form action={archiveAction} className="danger-row"><input type="hidden" name="accountId" value={account.id} /><span className="muted">Arsip hanya tersedia bila akun tidak dipakai transaksi aktif.</span><button className="button button--quiet" type="submit" disabled={archiving}>{archiving ? "Memeriksa…" : "Arsipkan"}</button><Feedback state={archiveState} /></form></div></details>;
+}
+
+export function BudgetForm({ enabled, categories }: { enabled: boolean; categories: Array<{ id: string; name: string }> }) {
+  const [state, action, pending] = useActionState(createBudget, initial);
+  const month = new Date().toISOString().slice(0, 7);
+  return <form action={action} className="form-grid form-grid--2"><div className="field"><label htmlFor="budget-category">Kategori pengeluaran</label><select className="input" id="budget-category" name="categoryId" required disabled={!enabled} defaultValue=""><option value="" disabled>Pilih kategori</option>{categories.map((category) => <option value={category.id} key={category.id}>{category.name}</option>)}</select><span className="field-help">Satu anggaran per kategori dan bulan.</span></div><div className="field"><label htmlFor="budget-month">Bulan</label><input className="input" id="budget-month" name="month" type="month" defaultValue={month} disabled={!enabled} /><span className="field-help">Periode anggaran</span></div><div className="field"><label htmlFor="budget-limit">Batas</label><input className="input mono" id="budget-limit" name="limit" inputMode="decimal" required disabled={!enabled} placeholder="0.00" /><span className="field-help">IDR</span></div><div><button className="button button--primary" type="submit" disabled={!enabled || pending || categories.length === 0} data-state={pending ? "loading" : undefined}>{pending ? "Menyimpan" : "Simpan anggaran"}</button><Feedback state={state} /></div></form>;
+}
+
+export function GoalForm({ enabled }: { enabled: boolean }) {
+  const [state, action, pending] = useActionState(createSavingsGoal, initial);
+  return <form action={action} className="form-grid form-grid--2"><div className="field"><label htmlFor="goal-name">Nama target</label><input className="input" id="goal-name" name="name" required disabled={!enabled} placeholder="Dana darurat" /><span className="field-help">Tujuan yang mudah dikenali.</span></div><div className="field"><label htmlFor="goal-target">Nominal target</label><input className="input mono" id="goal-target" name="target" inputMode="decimal" required disabled={!enabled} placeholder="0.00" /><span className="field-help">IDR</span></div><div className="field"><label htmlFor="goal-date">Tanggal sasaran</label><input className="input" id="goal-date" name="targetDate" type="date" disabled={!enabled} /><span className="field-help">Opsional</span></div><div><button className="button button--primary" type="submit" disabled={!enabled || pending} data-state={pending ? "loading" : undefined}>{pending ? "Menyimpan" : "Simpan target"}</button><Feedback state={state} /></div></form>;
+}
+
+export function GoalContributionForm({ goalId }: { goalId: string }) {
+  const [state, action, pending] = useActionState(addGoalContribution, initial);
+  const today = new Date().toISOString().slice(0, 10);
+  return <form action={action} className="inline-action"><input type="hidden" name="goalId" value={goalId} /><div className="field"><label htmlFor={`goal-amount-${goalId}`}>Kontribusi manual</label><input className="input mono" id={`goal-amount-${goalId}`} name="amount" inputMode="decimal" required placeholder="0.00" disabled={pending} /></div><div className="field"><label htmlFor={`goal-date-${goalId}`}>Tanggal</label><input className="input" id={`goal-date-${goalId}`} name="contributedAt" type="date" defaultValue={today} required disabled={pending} /></div><div className="field"><label htmlFor={`goal-note-${goalId}`}>Catatan</label><input className="input" id={`goal-note-${goalId}`} name="note" maxLength={500} placeholder="Opsional" disabled={pending} /></div><button className="button" type="submit" disabled={pending}>{pending ? "Menyimpan…" : "Tambah"}</button><Feedback state={state} /></form>;
+}

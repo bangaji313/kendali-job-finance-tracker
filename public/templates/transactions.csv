@@ -1,0 +1,2 @@
+kind,state,amount,occurred_at,description,source_account_id,destination_account_id,category_id
+expense,posted,50000.00,2026-09-07,Makan siang,00000000-0000-0000-0000-000000000001,,00000000-0000-0000-0000-000000000002

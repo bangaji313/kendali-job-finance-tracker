@@ -1,0 +1,2 @@
+-- Seed data is intentionally empty. Kendali never inserts fabricated personal or financial data.
+-- Create the first Auth user through Supabase Studio, then set its profile is_admin=true.

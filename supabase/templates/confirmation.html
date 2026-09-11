@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Konfirmasi email Kendali</title>
+  </head>
+  <body style="margin:0;background:#f3efeb;color:#231f1c;font-family:Arial,Helvetica,sans-serif;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f3efeb;">
+      <tr><td align="center" style="padding:32px 16px;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:560px;background:#fffdfa;border:1px solid #ded6cf;border-radius:12px;">
+          <tr><td style="padding:28px 32px 16px;border-bottom:1px solid #ded6cf;font-size:18px;font-weight:700;letter-spacing:-0.2px;">Kendali</td></tr>
+          <tr><td style="padding:32px;">
+            <p style="margin:0 0 10px;color:#756d66;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">Konfirmasi akun</p>
+            <h1 style="margin:0 0 16px;font-size:28px;line-height:1.2;letter-spacing:-0.6px;">Satu langkah lagi.</h1>
+            <p style="margin:0 0 24px;color:#514a45;font-size:16px;line-height:1.6;">Konfirmasi alamat email ini untuk mengaktifkan akun Kendali. Setelah itu, Anda dapat mulai mencatat lamaran dan keuangan pribadi.</p>
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr><td style="border-radius:8px;background:#231f1c;"><a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=email&amp;next=/hari-ini" style="display:inline-block;padding:13px 20px;color:#fffdfa;font-size:15px;font-weight:700;text-decoration:none;">Konfirmasi email</a></td></tr></table>
+            <p style="margin:24px 0 0;color:#756d66;font-size:13px;line-height:1.6;">Jika Anda tidak membuat akun Kendali, abaikan email ini. Tautan akan kedaluwarsa demi keamanan.</p>
+          </td></tr>
+          <tr><td style="padding:18px 32px;border-top:1px solid #ded6cf;color:#756d66;font-size:12px;line-height:1.5;">Email otomatis dari sistem autentikasi Kendali. Jangan membalas email ini.</td></tr>
+        </table>
+      </td></tr>
+    </table>
+  </body>
+</html>
