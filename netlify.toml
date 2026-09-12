@@ -7,6 +7,9 @@
   PNPM_VERSION = "11.19.0"
   NETLIFY_NEXT_SKEW_PROTECTION = "true"
 
+[context.production.environment]
+  NEXT_PUBLIC_SITE_URL = "https://kendalisys.netlify.app"
+
 [dev]
   command = "pnpm dev"
   targetPort = 3000
